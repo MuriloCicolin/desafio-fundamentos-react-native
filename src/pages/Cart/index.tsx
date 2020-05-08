@@ -24,8 +24,10 @@ import {
 } from './styles';
 
 import { useCart } from '../../hooks/cart';
+import FloatinCart from '../../components/FloatingCart';
 
 import formatValue from '../../utils/formatValue';
+import FloatingCart from '../../components/FloatingCart';
 
 interface Product {
   id: string;
@@ -39,23 +41,31 @@ const Cart: React.FC = () => {
   const { increment, decrement, products } = useCart();
 
   function handleIncrement(id: string): void {
-    // TODO
+    increment(id);
   }
 
   function handleDecrement(id: string): void {
-    // TODO
+    decrement(id);
   }
 
   const cartTotal = useMemo(() => {
     // TODO RETURN THE SUM OF THE QUANTITY OF THE PRODUCTS IN THE CART
 
-    return formatValue(0);
+    const totalSum = products.reduce((item, acc) => {
+      return item + acc.quantity * acc.price;
+    }, 0);
+
+    return formatValue(totalSum);
   }, [products]);
 
   const totalItensInCart = useMemo(() => {
     // TODO RETURN THE SUM OF THE QUANTITY OF THE PRODUCTS IN THE CART
 
-    return 0;
+    const totalItens = products.reduce((item, acc) => {
+      return item + acc.quantity;
+    }, 0);
+
+    return totalItens;
   }, [products]);
 
   return (
@@ -75,7 +85,7 @@ const Cart: React.FC = () => {
                 <ProductTitle>{item.title}</ProductTitle>
                 <ProductPriceContainer>
                   <ProductSinglePrice>
-                    {formatValue(item.price)}
+                    {formatValue(item.price * item.quantity)}
                   </ProductSinglePrice>
 
                   <TotalContainer>
@@ -110,6 +120,7 @@ const Cart: React.FC = () => {
         <TotalProductsText>{`${totalItensInCart} itens`}</TotalProductsText>
         <SubtotalValue>{cartTotal}</SubtotalValue>
       </TotalProductsContainer>
+      <FloatingCart />
     </Container>
   );
 };
